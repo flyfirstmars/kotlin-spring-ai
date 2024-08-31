@@ -1,6 +1,7 @@
 plugins {
-    kotlin("jvm") version "1.9.25"
-    kotlin("plugin.spring") version "1.9.25"
+    kotlin("jvm") version "2.0.20"
+    kotlin("plugin.serialization") version "2.0.20"
+    kotlin("plugin.spring") version "2.0.20"
     id("org.springframework.boot") version "3.3.3"
     id("io.spring.dependency-management") version "1.1.6"
 }
@@ -21,9 +22,15 @@ repositories {
 
 extra["springAiVersion"] = "1.0.0-M2"
 extra["springCloudVersion"] = "2023.0.3"
+extra["springdocOpenApiVersion"] = "2.6.0"
+extra["kotlinxSerializationJsonVersion"] = "1.7.2"
+extra["kotlinxCoroutinesReactorVersion"] = "1.8.1"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${property("springdocOpenApiVersion")}")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${property("kotlinxSerializationJsonVersion")}")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:${property("kotlinxCoroutinesReactorVersion")}")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.ai:spring-ai-openai-spring-boot-starter")
