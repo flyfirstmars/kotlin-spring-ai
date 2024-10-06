@@ -54,9 +54,9 @@ class ChatController(private val chatService: ChatService) {
         ]
     )
     @PostMapping("/analyze-image", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    suspend fun analyzeImage(@RequestPart file: MultipartFile): Response {
+    suspend fun analyzeImage(@RequestParam prompt: String, @RequestPart file: MultipartFile): Response {
         logger.info("Received image analysis request with file: ${file.originalFilename}")
-        return chatService.userMessageWithMediaType(file)
+        return chatService.userMessageWithMediaType(prompt, file)
     }
 
     @Operation(summary = "Stream chat completions", description = "Streams chat responses based on the provided prompt")
