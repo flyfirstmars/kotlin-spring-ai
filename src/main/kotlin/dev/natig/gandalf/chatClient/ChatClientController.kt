@@ -17,8 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @Tag(
-    name = "SpringAI ChatClient",
-    description = "Abstraction-based agentic interaction with LLM APIs"
+    name = "SpringAI ChatClient"
 )
 @RestController
 @RequestMapping("/v1/chat-client")

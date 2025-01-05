@@ -26,7 +26,11 @@ class ChatClientService(
                     Prompts.CHAT_SYSTEM_PROMPT,
                     resolvedConversationId
                 ).orEmpty()
-                ChatClientController.ChatResponse(conversationId = resolvedConversationId, response = response)
+                ChatClientController
+                    .ChatResponse(
+                        conversationId = resolvedConversationId,
+                        response = response
+                    )
             }
 
             ChatClientController.LogicType.NO_ADVISOR -> {
@@ -34,7 +38,11 @@ class ChatClientService(
                     message,
                     Prompts.CHAT_SYSTEM_PROMPT
                 ).orEmpty()
-                ChatClientController.ChatResponse(conversationId = "", response = response)
+                ChatClientController
+                    .ChatResponse(
+                        conversationId = "",
+                        response = response
+                    )
             }
         }
     }
