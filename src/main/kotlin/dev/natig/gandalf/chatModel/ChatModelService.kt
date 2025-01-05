@@ -1,7 +1,6 @@
-package dev.natig.gandalf.chat.selector
+package dev.natig.gandalf.chatModel
 
-import dev.natig.gandalf.chat.Prompts
-
+import dev.natig.gandalf.common.Prompts
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.reactive.asFlow
@@ -17,20 +16,20 @@ import org.springframework.util.MimeTypeUtils
 import org.springframework.web.multipart.MultipartFile
 
 @Service
-class SpringAIChatModelSelector(
+class ChatModelService(
     private val chatModel: ChatModel
-) : ImplementationSelector {
+)  {
 
-    override fun getChatCompletionWithTextPrompts(userTextPrompt: String): String =
+    fun getChatCompletionWithTextPrompts(userTextPrompt: String): String =
         getChatModelContent(chatModel, PromptBuilder.buildTextPrompt(userTextPrompt))
 
-    override fun getChatCompletionWithImageAnalysis(image: MultipartFile): String =
+    fun getChatCompletionWithImageAnalysis(image: MultipartFile): String =
         getChatModelContent(chatModel, PromptBuilder.buildImageAnalysisPrompt(image))
 
-    override fun streamChatCompletion(userTextPrompt: String): Flow<String> =
+     fun streamChatCompletion(userTextPrompt: String): Flow<String> =
         streamChatModelContent(chatModel, PromptBuilder.buildTextPrompt(userTextPrompt))
 
-    override fun streamChatCompletionWithImageAnalysis(image: MultipartFile): Flow<String> =
+    fun streamChatCompletionWithImageAnalysis(image: MultipartFile): Flow<String> =
         streamChatModelContent(chatModel, PromptBuilder.buildImageAnalysisPrompt(image))
 
     private fun getChatModelContent(chatModel: ChatModel, prompt: Prompt): String =

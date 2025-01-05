@@ -1,4 +1,4 @@
-package dev.natig.gandalf.agent
+package dev.natig.gandalf.chatClient
 
 import org.springframework.ai.chat.client.ChatClient
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor
@@ -13,7 +13,7 @@ class ChatClientConfig() {
     fun chatMemory(): InMemoryChatMemory = InMemoryChatMemory()
 
     @Bean
-    fun chatClient(builder: ChatClient.Builder, chatMemory: InMemoryChatMemory): ChatClient = builder
+    fun chatClient(builder: ChatClient.Builder): ChatClient = builder
         .defaultAdvisors(MessageChatMemoryAdvisor(InMemoryChatMemory()))
         .build()
 

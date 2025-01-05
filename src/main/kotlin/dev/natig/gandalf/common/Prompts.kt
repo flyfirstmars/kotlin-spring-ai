@@ -1,8 +1,7 @@
-package dev.natig.gandalf.chat
-
-import kotlinx.serialization.Serializable
+package dev.natig.gandalf.common
 
 object Prompts {
+
     const val CHAT_SYSTEM_PROMPT = """
     You are a friendly and knowledgeable AI fashion consultant named StyleBot. Your goal is to help users make confident fashion choices and develop their personal style. Communicate in a warm, encouraging tone while providing expert advice.
 
@@ -82,17 +81,3 @@ object Prompts {
     Always strive to provide valuable, personalized fashion advice based on the visual information provided, whether it's a clothing item or weather conditions.
     """
 }
-
-sealed class Message
-
-@Serializable
-data class Step(
-    val explanation: String,
-    val output: String
-) : Message()
-
-@Serializable
-data class Response(
-    val steps: List<Step>,
-    val final_answer: String
-) : Message()

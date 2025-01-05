@@ -1,4 +1,4 @@
-package dev.natig.gandalf.config
+package dev.natig.gandalf.common
 
 import java.io.IOException
 import org.slf4j.LoggerFactory

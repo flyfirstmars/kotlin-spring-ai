@@ -21,10 +21,10 @@ repositories {
 }
 
 extra["springAiVersion"] = "1.0.0-M5"
-extra["springCloudVersion"] = "2023.0.3"
-extra["springdocOpenApiVersion"] = "2.6.0"
-extra["kotlinxSerializationJsonVersion"] = "1.7.2"
-extra["kotlinxCoroutinesReactorVersion"] = "1.8.1"
+extra["springCloudVersion"] = "2024.0.0"
+extra["springdocOpenApiVersion"] = "2.8.0"
+extra["kotlinxSerializationJsonVersion"] = "1.7.3"
+extra["kotlinxCoroutinesReactorVersion"] = "1.10.1"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -34,8 +34,9 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.ai:spring-ai-openai-spring-boot-starter")
+//    implementation("org.springframework.ai:spring-ai-vertex-ai-gemini-spring-boot-starter")
+//    implementation("org.springframework.ai:spring-ai-anthropic-spring-boot-starter")
     implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j")
-    implementation("com.openai:openai-java:0.8.0")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
@@ -57,4 +58,8 @@ kotlin {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.named<org.springframework.boot.gradle.tasks.run.BootRun>("bootRun") {
+    jvmArgs = listOf("-XX:+UseZGC -XX:+ZGenerational")
 }

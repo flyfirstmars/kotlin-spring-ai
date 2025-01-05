@@ -1,4 +1,4 @@
-package dev.natig.gandalf.agent
+package dev.natig.gandalf.chatClient
 
 import org.springframework.ai.chat.client.ChatClient
 import org.springframework.stereotype.Service
@@ -26,7 +26,6 @@ class ChatClientService(
     fun getNoAdvisorChatClientResponse(
         userPromptText: String,
         systemPromptText: String,
-        conversationId: String,
     ): String? =
         chatClient.prompt()
             .system(systemPromptText)
