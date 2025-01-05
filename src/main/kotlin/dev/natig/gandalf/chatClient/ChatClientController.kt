@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.ai.chat.messages.Message
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -50,18 +51,40 @@ class ChatClientController(
     @Operation(
         summary = "Get all messages stored in a conversation"
     )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Successfully retrieved the list of messages"),
+            ApiResponse(responseCode = "404", description = "No messages found for the provided conversation ID")
+        ]
+    )
     @GetMapping("/conversation-messages/{conversationId}")
     fun getAllMessages(
         @PathVariable conversationId: String
-    ): List<Message> = chatClientService.getAllMessages(conversationId)
+    ): ResponseEntity<List<Message>> {
+        val messages = chatClientService.getAllMessages(conversationId)
+        return if (messages.isEmpty()) {
+            ResponseEntity.notFound().build()
+        } else {
+            ResponseEntity.ok(messages)
+        }
+    }
 
     @Operation(
         summary = "Remove messages from the conversation"
     )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "204", description = "Successfully cleared the conversation"),
+            ApiResponse(responseCode = "404", description = "Conversation not found")
+        ]
+    )
     @DeleteMapping("/{conversationId}")
     fun clearConversation(
         @PathVariable conversationId: String
-    ) = chatClientService.clearConversation(conversationId)
+    ): ResponseEntity<Void> {
+        chatClientService.clearConversation(conversationId)
+        return ResponseEntity.noContent().build()
+    }
 
     enum class LogicType {
         ADVISOR,
