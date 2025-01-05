@@ -1,12 +1,9 @@
 package dev.natig.gandalf.chatClient
 
-import dev.natig.gandalf.common.Prompts
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
-import java.util.UUID
-import org.springframework.ai.chat.memory.InMemoryChatMemory
 import org.springframework.ai.chat.messages.Message
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -25,8 +22,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/v1/chat-client")
 class ChatClientController(
-    private val chatClientService: ChatClientService,
-    private val chatMemory: InMemoryChatMemory
+    private val chatClientService: ChatClientService
 ) {
 
     @Operation(
@@ -48,25 +44,7 @@ class ChatClientController(
         @RequestParam logicType: LogicType,
         @RequestBody message: String
     ): ChatResponse {
-        return when (logicType) {
-            LogicType.ADVISOR -> {
-                val resolvedConversationId = getOrCreateConversationId(conversationId)
-                val response = chatClientService.getChatClientResponse(
-                    message,
-                    Prompts.CHAT_SYSTEM_PROMPT,
-                    resolvedConversationId
-                ).orEmpty()
-                ChatResponse(conversationId = resolvedConversationId, response = response)
-            }
-
-            LogicType.NO_ADVISOR -> {
-                val response = chatClientService.getNoAdvisorChatClientResponse(
-                    message,
-                    Prompts.CHAT_SYSTEM_PROMPT
-                ).orEmpty()
-                ChatResponse(conversationId = "", response = response)
-            }
-        }
+        return chatClientService.getChatResponse(conversationId, logicType, message)
     }
 
     @Operation(
@@ -75,7 +53,7 @@ class ChatClientController(
     @GetMapping("/conversation-messages/{conversationId}")
     fun getAllMessages(
         @PathVariable conversationId: String
-    ): List<Message> = chatMemory.get(conversationId, 100)
+    ): List<Message> = chatClientService.getAllMessages(conversationId)
 
     @Operation(
         summary = "Remove messages from the conversation"
@@ -83,12 +61,7 @@ class ChatClientController(
     @DeleteMapping("/{conversationId}")
     fun clearConversation(
         @PathVariable conversationId: String
-    ) = chatMemory.clear(conversationId)
-
-    private fun getOrCreateConversationId(conversationId: String?): String =
-        conversationId ?: UUID.randomUUID().toString().also {
-            chatMemory.add(it, emptyList())
-        }
+    ) = chatClientService.clearConversation(conversationId)
 
     enum class LogicType {
         ADVISOR,
