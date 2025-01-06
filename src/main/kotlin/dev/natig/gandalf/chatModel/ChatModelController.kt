@@ -1,5 +1,6 @@
 package dev.natig.gandalf.chatModel
 
+import dev.natig.gandalf.common.ResponseType
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
@@ -69,10 +70,6 @@ class ChatModelController(private val chatModelService: ChatModelService) {
         ResponseType.STREAM -> chatModelService.streamChatCompletionWithImageAnalysis(image)
     }
 
-    enum class ResponseType {
-        STREAM,
-        NON_STREAM
-    }
 }
 
 

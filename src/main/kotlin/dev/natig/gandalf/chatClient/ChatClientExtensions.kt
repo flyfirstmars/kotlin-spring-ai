@@ -5,7 +5,11 @@ import org.springframework.ai.chat.client.ChatClient
 import org.springframework.ai.chat.memory.InMemoryChatMemory
 
 internal fun String?.resolveConversationIdWithMemory(chatMemory: InMemoryChatMemory): String {
-    return this ?: UUID.randomUUID().toString().also { chatMemory.add(it, emptyList()) }
+    return if (this.isNullOrEmpty()) {
+        UUID.randomUUID().toString().also { chatMemory.add(it, emptyList()) }
+    } else {
+        this
+    }
 }
 
 internal fun ChatClient.getAdvisorResponse(
