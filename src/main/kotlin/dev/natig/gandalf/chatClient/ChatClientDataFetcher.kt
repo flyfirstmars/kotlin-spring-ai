@@ -4,7 +4,6 @@ import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
 import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.InputArgument
-import org.springframework.ai.chat.messages.Message
 
 @DgsComponent
 class ChatClientDataFetcher(private val chatClientService: ChatClientService) {
@@ -19,7 +18,7 @@ class ChatClientDataFetcher(private val chatClientService: ChatClientService) {
     }
 
     @DgsQuery
-    fun getAllMessages(@InputArgument conversationId: String): List<Message> {
+    fun getAllMessages(@InputArgument conversationId: String): List<MessageWrapper> {
         return chatClientService.getAllMessages(conversationId)
     }
 

@@ -7,24 +7,10 @@ spring:
       api-key: ${OPENAI_API_KEY}
       chat:
         options:
-          model: gpt-4o-mini
-          temperature: 0.1
-          max-tokens: 4096
-          top-p: 0.95
-          # Uncomment below for response format customization
-          # response-format:
-          #   type: JSON_SCHEMA
-          #   name: MySchemaName
-          #   schema: >
-          #     {"type":"object","properties":{"steps":{"type":"array","items":{"type":"object","properties":{"explanation":{"type":"string"},"output":{"type":"string"}},"required":["explanation","output"],"additionalProperties":false}},"final_answer":{"type":"string"}},"required":["steps","final_answer"],"additionalProperties":false}
-          #   strict: true
-
-    # Uncomment to enable Vertex AI Gemini settings
-    # vertex:
-    #   ai:
-    #     gemini:
-    #       project-id: ${GEMINI_PROJECT_ID}
-    #       api-endpoint: ${GEMINI_ENDPOINT}
+          model: ${OPENAI_MODEL}
+          temperature: ${OPENAI_TEMPERATURE}
+          max-tokens: ${OPENAI_MAX_TOKENS}
+          top-p: ${OPENAI_TOP_P}
 
   doc:
     api-docs:

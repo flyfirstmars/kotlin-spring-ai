@@ -3,7 +3,6 @@ package dev.natig.gandalf.chatClient
 import dev.natig.gandalf.common.Prompts
 import org.springframework.ai.chat.client.ChatClient
 import org.springframework.ai.chat.memory.InMemoryChatMemory
-import org.springframework.ai.chat.messages.Message
 import org.springframework.stereotype.Service
 
 @Service
@@ -41,7 +40,17 @@ class ChatClientService(
         )
     }
 
-    fun getAllMessages(conversationId: String): List<Message> = chatMemory.get(conversationId, MAX_MESSAGES)
+    @Suppress("UNCHECKED_CAST")
+    fun getAllMessages(conversationId: String): List<MessageWrapper> {
+        val messages = chatMemory.get(conversationId, MAX_MESSAGES)
+        return messages.map { message ->
+            MessageWrapper(
+                originalMessage = message,
+                media = message.metadata["media"] as? List<Any> ?: emptyList(),
+                toolCalls = message.metadata["toolCalls"] as? List<Any> ?: emptyList()
+            )
+        }
+    }
 
     fun clearConversation(conversationId: String) = chatMemory.clear(conversationId)
 

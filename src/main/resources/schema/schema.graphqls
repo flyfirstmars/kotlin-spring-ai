@@ -11,15 +11,14 @@ type Mutation {
     imageAnalysis(image: Upload!): String
 }
 
+type Subscription {
+    streamChatCompletion(userPrompt: String!): String
+    streamChatCompletionWithImageAnalysis(image: Upload!): String
+}
+
 type ChatResponse {
     conversationId: String
     response: String
-}
-
-type Message {
-    id: ID
-    content: String
-    timestamp: String
 }
 
 enum LogicType {
@@ -27,8 +26,30 @@ enum LogicType {
     NO_ADVISOR
 }
 
-type Subscription {
-    streamChatCompletion(userPrompt: String!): String
-    streamChatCompletionWithImageAnalysis(image: Upload!): String
+type Message {
+    messageType: String
+    metadata: Metadata
+    media: [Media]
+    toolCalls: [ToolCall]
+    text: String
+    content: String
 }
 
+type Metadata {
+    finishReason: String
+    refusal: String
+    index: Int
+    role: String
+    id: String
+    messageType: String
+}
+
+type Media {
+    type: String
+    url: String
+}
+
+type ToolCall {
+    name: String
+    parameters: String
+}

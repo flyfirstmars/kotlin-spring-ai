@@ -69,8 +69,4 @@ class ChatModelController(private val chatModelService: ChatModelService) {
         ResponseType.NON_STREAM -> chatModelService.getChatCompletionWithImageAnalysis(image)
         ResponseType.STREAM -> chatModelService.streamChatCompletionWithImageAnalysis(image)
     }
-
 }
-
-
-

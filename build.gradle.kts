@@ -38,9 +38,6 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.ai:spring-ai-openai-spring-boot-starter")
     runtimeOnly("name.nkonev.multipart-spring-graphql:multipart-spring-graphql:1.5.3")
-
-//    implementation("org.springframework.ai:spring-ai-vertex-ai-gemini-spring-boot-starter")
-//    implementation("org.springframework.ai:spring-ai-anthropic-spring-boot-starter")
     implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("com.netflix.graphql.dgs:graphql-dgs-spring-graphql-starter-test")
