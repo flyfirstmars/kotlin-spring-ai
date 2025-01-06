@@ -4,42 +4,54 @@ import dev.natig.gandalf.common.Prompts
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.reactive.asFlow
-import org.springframework.ai.chat.messages.SystemMessage
-import org.springframework.ai.chat.messages.UserMessage
 import org.springframework.ai.chat.model.ChatModel
 import org.springframework.ai.chat.prompt.Prompt
-import org.springframework.ai.model.Media
-import org.springframework.core.io.ByteArrayResource
 import org.springframework.stereotype.Service
-import org.springframework.util.MimeType
-import org.springframework.util.MimeTypeUtils
 import org.springframework.web.multipart.MultipartFile
 
 @Service
 class ChatModelService(
-    private val chatModel: ChatModel
-)  {
+    private val chatModel: ChatModel,
+    private val promptBuilder: PromptBuilder
+) {
 
     fun getChatCompletionWithTextPrompts(userTextPrompt: String): String =
-        getChatModelContent(chatModel, PromptBuilder.buildTextPrompt(userTextPrompt))
+        chatModel.getSingleResponse(
+            promptBuilder
+                .systemMessage(Prompts.CHAT_SYSTEM_PROMPT)
+                .userMessage(userTextPrompt)
+                .build()
+        )
 
     fun getChatCompletionWithImageAnalysis(image: MultipartFile): String =
-        getChatModelContent(chatModel, PromptBuilder.buildImageAnalysisPrompt(image))
+        chatModel.getSingleResponse(
+            promptBuilder
+                .systemMessage(Prompts.IMAGE_ANALYSIS_SYSTEM_PROMPT)
+                .userMessage("Analyze this image", image)
+                .build()
+        )
 
-     fun streamChatCompletion(userTextPrompt: String): Flow<String> =
-        streamChatModelContent(chatModel, PromptBuilder.buildTextPrompt(userTextPrompt))
+    fun streamChatCompletion(userTextPrompt: String): Flow<String> =
+        chatModel.getStreamingResponse(
+            promptBuilder
+                .systemMessage(Prompts.CHAT_SYSTEM_PROMPT)
+                .userMessage(userTextPrompt)
+                .build()
+        )
 
     fun streamChatCompletionWithImageAnalysis(image: MultipartFile): Flow<String> =
-        streamChatModelContent(chatModel, PromptBuilder.buildImageAnalysisPrompt(image))
+        chatModel.getStreamingResponse(
+            promptBuilder
+                .systemMessage(Prompts.IMAGE_ANALYSIS_SYSTEM_PROMPT)
+                .userMessage("Analyze this image", image)
+                .build()
+        )
 
-    private fun getChatModelContent(chatModel: ChatModel, prompt: Prompt): String =
-        chatModel.call(prompt)
-            .results.first()
-            .output
-            .content
+    private fun ChatModel.getSingleResponse(prompt: Prompt): String =
+        call(prompt).results.firstOrNull()?.output?.content.orEmpty()
 
-    private fun streamChatModelContent(chatModel: ChatModel, prompt: Prompt): Flow<String> =
-        chatModel.stream(prompt)
+    private fun ChatModel.getStreamingResponse(prompt: Prompt): Flow<String> =
+        stream(prompt)
             .asFlow()
             .mapNotNull { chatResponse ->
                 chatResponse
@@ -49,32 +61,4 @@ class ChatModelService(
                     ?.content
                     ?.takeIf { it.isNotBlank() }
             }
-
-    private object PromptBuilder {
-        fun buildTextPrompt(userTextPrompt: String): Prompt =
-            Prompt(
-                listOf(
-                    SystemMessage(Prompts.CHAT_SYSTEM_PROMPT),
-                    UserMessage(userTextPrompt)
-                )
-            )
-
-        fun buildImageAnalysisPrompt(image: MultipartFile): Prompt {
-            val media = createMediaFromImage(image)
-            val userMessage = UserMessage("Analyze this image", listOf(media))
-            val systemMessage = SystemMessage(Prompts.IMAGE_ANALYSIS_SYSTEM_PROMPT)
-            return Prompt(listOf(systemMessage, userMessage))
-        }
-
-        private fun createMediaFromImage(image: MultipartFile): Media =
-            Media(resolveMimeType(image), ByteArrayResource(image.bytes))
-
-        private fun resolveMimeType(image: MultipartFile): MimeType =
-            when (image.contentType) {
-                MimeTypeUtils.IMAGE_JPEG_VALUE -> MimeTypeUtils.IMAGE_JPEG
-                MimeTypeUtils.IMAGE_PNG_VALUE -> MimeTypeUtils.IMAGE_PNG
-                else -> throw IllegalArgumentException("Unsupported image type ${image.contentType}")
-            }
-    }
-
 }

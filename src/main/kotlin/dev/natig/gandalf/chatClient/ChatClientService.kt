@@ -1,7 +1,6 @@
 package dev.natig.gandalf.chatClient
 
 import dev.natig.gandalf.common.Prompts
-import java.util.UUID
 import org.springframework.ai.chat.client.ChatClient
 import org.springframework.ai.chat.memory.InMemoryChatMemory
 import org.springframework.ai.chat.messages.Message
@@ -15,73 +14,38 @@ class ChatClientService(
 
     fun getChatResponse(
         conversationId: String?,
-        logicType: ChatClientController.LogicType,
+        logicType: LogicType,
         message: String
-    ): ChatClientController.ChatResponse {
-        return when (logicType) {
-            ChatClientController.LogicType.ADVISOR -> {
-                val resolvedConversationId = getOrCreateConversationId(conversationId)
-                val response = getChatClientResponse(
-                    message,
-                    Prompts.CHAT_SYSTEM_PROMPT,
-                    resolvedConversationId
-                ).orEmpty()
-                ChatClientController
-                    .ChatResponse(
-                        conversationId = resolvedConversationId,
-                        response = response
-                    )
-            }
-
-            ChatClientController.LogicType.NO_ADVISOR -> {
-                val response = getNoAdvisorChatClientResponse(
-                    message,
-                    Prompts.CHAT_SYSTEM_PROMPT
-                ).orEmpty()
-                ChatClientController
-                    .ChatResponse(
-                        conversationId = "",
-                        response = response
-                    )
-            }
+    ): ChatResponse {
+        val resolvedConversationId = when (logicType) {
+            LogicType.ADVISOR -> conversationId.resolveConversationIdWithMemory(chatMemory)
+            LogicType.NO_ADVISOR -> conversationId.orEmpty()
         }
+
+        val response = when (logicType) {
+            LogicType.ADVISOR -> chatClient.getAdvisorResponse(
+                message,
+                Prompts.CHAT_SYSTEM_PROMPT,
+                resolvedConversationId
+            )
+
+            LogicType.NO_ADVISOR -> chatClient.getNoAdvisorResponse(
+                message,
+                Prompts.CHAT_SYSTEM_PROMPT
+            )
+        }
+
+        return ChatResponse(
+            conversationId = resolvedConversationId,
+            response = response.orEmpty()
+        )
     }
 
-    private fun getOrCreateConversationId(conversationId: String?): String =
-        conversationId ?: UUID.randomUUID().toString().also {
-            chatMemory.add(it, emptyList())
-        }
+    fun getAllMessages(conversationId: String): List<Message> = chatMemory.get(conversationId, MAX_MESSAGES)
 
-    fun getChatClientResponse(
-        userPromptText: String,
-        systemPromptText: String,
-        conversationId: String
-    ): String? =
-        chatClient.prompt()
-            .system(systemPromptText)
-            .user(userPromptText)
-            .advisors { advisor ->
-                advisor.param("chat_memory_conversation_id", conversationId)
-                    .param("chat_memory_response_size", 20)
-            }
-            .call()
-            .content()
+    fun clearConversation(conversationId: String) = chatMemory.clear(conversationId)
 
-    fun getNoAdvisorChatClientResponse(
-        userPromptText: String,
-        systemPromptText: String
-    ): String? =
-        chatClient.prompt()
-            .system(systemPromptText)
-            .user(userPromptText)
-            .call()
-            .content()
-
-    fun getAllMessages(
-        conversationId: String
-    ): List<Message> = chatMemory.get(conversationId, 100)
-
-    fun clearConversation(
-        conversationId: String
-    ) = chatMemory.clear(conversationId)
+    companion object {
+        private const val MAX_MESSAGES = 100
+    }
 }

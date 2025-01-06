@@ -13,8 +13,8 @@ class ChatClientConfig() {
     fun chatMemory(): InMemoryChatMemory = InMemoryChatMemory()
 
     @Bean
-    fun chatClient(builder: ChatClient.Builder): ChatClient = builder
-        .defaultAdvisors(MessageChatMemoryAdvisor(InMemoryChatMemory()))
+    fun chatClient(builder: ChatClient.Builder, chatMemory: InMemoryChatMemory): ChatClient = builder
+        .defaultAdvisors(MessageChatMemoryAdvisor(chatMemory))
         .build()
 
     @Bean

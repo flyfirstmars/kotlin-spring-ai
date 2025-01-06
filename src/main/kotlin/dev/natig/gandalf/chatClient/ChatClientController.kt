@@ -84,14 +84,4 @@ class ChatClientController(
         chatClientService.clearConversation(conversationId)
         return ResponseEntity.noContent().build()
     }
-
-    enum class LogicType {
-        ADVISOR,
-        NO_ADVISOR
-    }
-
-    data class ChatResponse(
-        val conversationId: String,
-        val response: String
-    )
 }
