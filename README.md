@@ -35,37 +35,6 @@ Ensure you have the following installed:
 
 ---
 
-## Getting Started
-
----
-
-# SpringAI-Based LLM API Example: ChatClient and ChatModel
-
-This project demonstrates how to build a flexible, stateless API for interacting with Large Language Models (LLMs) using **SpringAI**. It provides two approaches:
-
-- **ChatClient API**: For managing conversational interactions with contextual memory.
-- **ChatModel API**: For stateless interactions with LLMs, supporting both text and image-based inputs.
-
-The project includes REST and GraphQL APIs, offering flexibility for various client implementations.
-
----
-
-## Features
-
-- **Contextual Memory Management** (ChatClient API):
-  - Maintain conversation context using in-memory storage.
-  - Retrieve and clear conversation histories as needed.
-- **Stateless Interactions** (ChatModel API):
-  - Handle independent API calls for text and image-based inputs.
-  - Streaming and non-streaming response modes supported.
-- **Dynamic Prompt Building**:
-  - Construct flexible prompts for text or image inputs.
-  - Attach media to prompts for tasks like image analysis.
-- **Multi-API Support**:
-  - REST and GraphQL APIs for chat completions, image analysis, and streaming.
-
----
-
 ## Environment Variables
 
 The application reads the following environment variables to configure the OpenAI integration (**you can use any other vendor currently supported by SpringAI**) via `application.yml`:
