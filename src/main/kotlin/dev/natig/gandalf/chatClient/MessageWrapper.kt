@@ -19,6 +19,4 @@ data class MessageWrapper(
     override fun getMetadata(): Map<String, Any> =
         originalMessage.metadata.filterValues { it != null }
 
-    @Deprecated("Deprecated in Java")
-    override fun getContent(): String = originalMessage.text
 }

@@ -2,7 +2,7 @@ plugins {
     kotlin("jvm") version "2.0.21"
     kotlin("plugin.serialization") version "2.0.21"
     kotlin("plugin.spring") version "2.0.21"
-    id("org.springframework.boot") version "3.4.1"
+    id("org.springframework.boot") version "3.4.2"
     id("io.spring.dependency-management") version "1.1.7"
     id("com.netflix.dgs.codegen") version "7.0.3"
 }
@@ -21,7 +21,7 @@ repositories {
     maven { url = uri("https://repo.spring.io/milestone") }
 }
 
-extra["springAiVersion"] = "1.0.0-M5"
+extra["springAiVersion"] = "1.0.0-M6"
 extra["springCloudVersion"] = "2024.0.0"
 extra["springdocOpenApiVersion"] = "2.8.0"
 extra["kotlinxSerializationJsonVersion"] = "1.7.3"

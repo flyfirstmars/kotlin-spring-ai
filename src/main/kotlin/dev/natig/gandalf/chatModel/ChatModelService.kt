@@ -48,7 +48,7 @@ class ChatModelService(
         )
 
     private fun ChatModel.getSingleResponse(prompt: Prompt): String =
-        call(prompt).results.firstOrNull()?.output?.content.orEmpty()
+        call(prompt).results.firstOrNull()?.output?.text.orEmpty()
 
     private fun ChatModel.getStreamingResponse(prompt: Prompt): Flow<String> =
         stream(prompt)
@@ -58,7 +58,7 @@ class ChatModelService(
                     .results
                     .firstOrNull()
                     ?.output
-                    ?.content
+                    ?.text
                     ?.takeIf { it.isNotBlank() }
             }
 }
