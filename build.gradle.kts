@@ -26,19 +26,22 @@ extra["springCloudVersion"] = "2024.0.0"
 extra["springdocOpenApiVersion"] = "2.8.0"
 extra["kotlinxSerializationJsonVersion"] = "1.7.3"
 extra["kotlinxCoroutinesReactorVersion"] = "1.10.1"
+extra["kotlinxDateTimeVersion"] = "0.6.2"
 extra["netflixDgsVersion"] = "10.0.1"
+extra["nkonevMultipartSpringGraphqlVersion"] = "1.5.3"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("com.netflix.graphql.dgs:graphql-dgs-spring-graphql-starter")
+    implementation("org.springframework.ai:spring-ai-openai-spring-boot-starter")
+    implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${property("springdocOpenApiVersion")}")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${property("kotlinxSerializationJsonVersion")}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:${property("kotlinxCoroutinesReactorVersion")}")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:${property("kotlinxDateTimeVersion")}")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.springframework.ai:spring-ai-openai-spring-boot-starter")
-    runtimeOnly("name.nkonev.multipart-spring-graphql:multipart-spring-graphql:1.5.3")
-    implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j")
+    implementation("com.netflix.graphql.dgs:graphql-dgs-spring-graphql-starter")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    runtimeOnly("name.nkonev.multipart-spring-graphql:multipart-spring-graphql:${property("nkonevMultipartSpringGraphqlVersion")}")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("com.netflix.graphql.dgs:graphql-dgs-spring-graphql-starter-test")
     testImplementation("org.springframework.boot:spring-boot-starter-test")

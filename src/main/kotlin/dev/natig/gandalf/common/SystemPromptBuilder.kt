@@ -1,12 +1,12 @@
 package dev.natig.gandalf.common
 
-fun prompt(init: PromptBuilder.() -> Unit): String {
-    val builder = PromptBuilder()
+internal fun prompt(init: SystemPromptBuilder.() -> Unit): String {
+    val builder = SystemPromptBuilder()
     builder.init()
     return builder.build()
 }
 
-class PromptBuilder {
+class SystemPromptBuilder {
     private val sections = mutableListOf<String>()
 
     fun role(description: String) {
