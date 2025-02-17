@@ -12,13 +12,13 @@ class SchedulerService(
 ) {
 
     fun processRequest(
-        conversationId: String?,
         payload: String
-    ): String? = chatClient.prompt()
-        .system(SCHEDULER.SYSTEM_PROMPT)
-        .user(payload)
-        .tools(schedulerTools, dateTimeTools)
-        .call()
-        .content()
-
+    ): String? {
+        return chatClient.prompt()
+            .system(SCHEDULER.SYSTEM_PROMPT)
+            .user(payload)
+            .tools(schedulerTools, dateTimeTools)
+            .call()
+            .content()
+    }
 }

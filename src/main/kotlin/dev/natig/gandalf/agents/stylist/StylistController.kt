@@ -1,5 +1,7 @@
 package dev.natig.gandalf.agents.stylist
 
+import dev.natig.gandalf.chatClient.ChatResponse
+import io.swagger.v3.oas.annotations.parameters.RequestBody
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -13,14 +15,15 @@ class StylistController(private val stylistService: StylistService) {
 
     @PostMapping("/advice", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun getAdvice(
-        @RequestParam userTextPrompt: String,
+        @RequestParam(required = false) conversationId: String?,
+        @RequestBody userTextPrompt: String,
         @RequestParam(required = false) image: MultipartFile?
-    ): String? {
+    ): ChatResponse {
         val payload = if (image != null && !image.isEmpty) {
-            "$userTextPrompt [User attached an image for analysis]"
+            "[User attached an image for analysis] $userTextPrompt"
         } else {
             userTextPrompt
         }
-        return stylistService.processRequest(payload)
+        return stylistService.processRequest(conversationId, payload)
     }
 }
