@@ -77,7 +77,6 @@ class StylistService(
                     .param("chat_memory_response_size", 20)
             }
             .tools(stylistTools, dateTimeTools)
-            .toolContext(mapOf("conversationId" to conversationId))
             .call()
             .content()
 
