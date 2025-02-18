@@ -6,7 +6,10 @@ import dev.natig.gandalf.chatClient.ChatResponse
 import dev.natig.gandalf.chatClient.resolveConversationIdWithMemory
 import org.springframework.ai.chat.client.ChatClient
 import org.springframework.ai.chat.memory.InMemoryChatMemory
+import org.springframework.core.io.ByteArrayResource
 import org.springframework.stereotype.Service
+import org.springframework.util.MimeTypeUtils
+import org.springframework.web.multipart.MultipartFile
 
 @Service
 class StylistService(
@@ -15,14 +18,24 @@ class StylistService(
     private val dateTimeTools: DateTimeTools,
     private val chatMemory: InMemoryChatMemory
 ) {
+
     fun processRequest(
         conversationId: String?,
-        payload: String
+        userTextPrompt: String,
+        image: MultipartFile?
     ): ChatResponse {
         val resolvedConversationId = conversationId.resolveConversationIdWithMemory(chatMemory)
-        val response = chatClient.prompt()
-            .system(SYSTEM_PROMPT)
-            .user(payload)
+
+        val promptSpec = if (image != null && !image.isEmpty) {
+            chatClient.prompt().system(SYSTEM_PROMPT).user { userSpec ->
+                userSpec.text(userTextPrompt)
+                userSpec.media(MimeTypeUtils.IMAGE_JPEG, ByteArrayResource(image.bytes))
+            }
+        } else {
+            chatClient.prompt().system(SYSTEM_PROMPT).user(userTextPrompt)
+        }
+
+        val response = promptSpec
             .advisors { advisor ->
                 advisor.param("chat_memory_conversation_id", resolvedConversationId)
                     .param("chat_memory_response_size", 20)

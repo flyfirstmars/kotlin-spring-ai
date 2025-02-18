@@ -19,11 +19,10 @@ class StylistController(private val stylistService: StylistService) {
         @RequestBody userTextPrompt: String,
         @RequestParam(required = false) image: MultipartFile?
     ): ChatResponse {
-        val payload = if (image != null && !image.isEmpty) {
-            "[User attached an image for analysis] $userTextPrompt"
-        } else {
-            userTextPrompt
-        }
-        return stylistService.processRequest(conversationId, payload)
+        return stylistService.processRequest(
+            conversationId,
+            userTextPrompt,
+            image
+        )
     }
 }
